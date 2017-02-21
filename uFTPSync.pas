@@ -163,147 +163,16 @@ var
   i: Integer;
 begin
   Result := False;
-  for i := 0 to self.Count do
+  for i := 0 to self.Count-1 do
   begin
     if (self[i].FileName = LocalFile.FileName) and (self[i].Size = LocalFile.Size) and
-        (self[i].FileDate = LocalFile.FileDate) then
+        (self[i].FileDate >= LocalFile.FileDate) and (self[i].Path.IndexOf(LocalFile.Path.Replace('\','/',[rfReplaceAll])) > 0) then
+    begin
       Result := True;
+      Exit;
+    end;
   end;
 end;
-
-//function UpdateFileTime(FileName: string; filedatetime: tdatetime): boolean;
-//var
-//  F: THandle;
-//begin
-//  if not ForceDirectories(ExtractFilePath(FileName)) then
-//    raise Exception.CreateFmt('Unable to access file %s', [FileName]);
-//
-//  F := CreateFile(Pchar(FileName), GENERIC_WRITE, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_ALWAYS,
-//      FILE_ATTRIBUTE_NORMAL, 0);
-//  Result := F <> THandle(-1);
-//  if Result then
-//  begin
-//{$WARN SYMBOL_PLATFORM OFF}
-//    FileSetDate(F, DateTimeToFileDate(filedatetime));
-//{$WARN SYMBOL_PLATFORM ON}
-//    FileClose(F);
-//  end;
-//end;
-//
-//procedure SyncFtpToLocal(localfolder, ftpurl: string; ftpfolder: string; login, password: string);
-//var
-//  Ftp          : TIdFTP;
-//  URL          : TIdURI;
-//  ftpFileList  : TFtpFileList;
-//  i            : Integer;
-//  info, curpath: string;
-//  curdir       : string;
-//  LocalFile    : TMemoryStream;
-////  fileattr     : TFileAttr;
-//  CoolCheck    : boolean;
-//  localfiles   : TLocalFileList;
-//
-//  procedure FetchFile;
-//  begin
-//    if not DirectoryExists(curdir + ftpFileList[i].Path) then
-//      MkDir(curdir + ftpFileList[i].Path);
-//    ftpFileList[i].FetchContent(Ftp);
-//    ftpFileList[i].Content.SaveToFile(curpath);
-//    UpdateFileTime(curpath, ftpFileList[i].FileDate);
-//  end;
-//
-//begin
-//  curdir := IncludeTrailingPathDelimiter(localfolder);
-//  localfiles := TLocalFileList.Create;
-//  ftpFileList := TFtpFileList.Create;
-//  LocalFile := TMemoryStream.Create;
-//  Ftp := TIdFTP.Create(nil);
-//  URL := TIdURI.Create(ftpurl);
-//  try
-//    GetAllSubFolders(curdir, localfiles);
-//    Ftp.Host := URL.Host;
-//    Ftp.port := strtointdef(URL.port, 21);
-//    Ftp.UserName := login;
-//    Ftp.password := password;
-//    Ftp.AutoLogin := True;
-//    Ftp.Passive := True;
-//    writeln('Connecting to ' + login + ':' + password + '@' + ftpurl);
-//    Ftp.Connect;
-//    try
-//      if Ftp.Connected then
-//      begin
-//        Ftp.ChangeDir(URL.Path);
-//        ftpFileList.ParseFtp(Ftp, ftpfolder, ftpFileList);
-//        CoolCheck := Ftp.SupportsVerification;
-//        writeln('Server supports verification = ', CoolCheck);
-//        for i := 0 to ftpFileList.Count - 1 do
-//        begin
-//          info := ftpFileList[i].Description;
-//          write('Checking ' + ftpFileList[i].FileName + '. ');
-//          curpath := ansilowercase(ansireplacestr(curdir + ftpFileList[i].Path + ftpFileList[i].FileName, '/', '\'));
-//          if localfiles.ContainsKey(curpath) then
-//          begin
-//            write('File exists ');
-//            // Check file
-//            if CoolCheck then
-//            begin
-//              // Easy way to check (FTP server supports checksum verification)
-//              LocalFile.Clear;
-//              LocalFile.LoadFromFile(curpath);
-//              if not Ftp.VerifyFile(LocalFile, ftpFileList[i].Path + ftpFileList[i].FileName) then
-//              begin
-//                // Files do not match
-//                writeln('but differ. Fetching.');
-//                FetchFile;
-//              end
-//              else
-//                writeln('and is the same.');
-//            end
-//            else
-//            begin
-//              // Complex way to check
-//              if not localfiles.TryGetValue(curpath, fileattr) then
-//                raise Exception.Create('Can''t get local file attributes: ' + curpath);
-//              if (fileattr.Size <> DWORD(ftpFileList[i].Size)) or
-//                  (abs(fileattr.DateTime - ftpFileList[i].FileDate) > 2 / SecsPerDay)
-//              // 2 sec diff in modified time is acceptable due to strange round functionality
-//              then
-//              begin
-//                writeln('but differ. Fetching.');
-//                FetchFile;
-//              end
-//              else
-//                writeln('and is the same.');
-//            end;
-//            // remove from local files list
-//            localfiles.Remove(curpath);
-//          end
-//          else
-//          begin
-//            // Local file does not exist. Fetch it from FTP
-//            writeln('File do not exist. Fetching.');
-//            FetchFile;
-//          end;
-//        end;
-//        Ftp.Disconnect;
-//      end;
-//      for info in localfiles.keys do
-//      begin
-//        writeln('Local file ' + info + ' is absent on the FTP server. Removing.');
-//        DeleteFile(PWideChar(info));
-//      end;
-//    except
-//      on E: Exception do
-//        writeln('ftp error for ' + info + sLineBreak + E.Message);
-//    end;
-//  finally
-//    FreeAndNil(LocalFile);
-//    FreeAndNil(Ftp);
-//    FreeAndNil(URL);
-//    FreeAndNil(ftpFileList);
-//    FreeAndNil(localfiles);
-//  end;
-//end;
 
 procedure SyncLocalToFTP(localfolder, ftpurl: string; ftpfolder: string; login, password: string);
 var
@@ -311,7 +180,7 @@ var
   remoteFileList: TFtpFileList;
   FtpConnection : TIdFTP;
   urlConnection : TIdURI;
-  i             : TObject;
+  i             : integer;
 begin
   FtpConnection := TIdFTP.Create(nil);
   urlConnection := TIdURI.Create(ftpurl);
@@ -330,8 +199,11 @@ begin
     localFileList.ParseLocalDirectory(localfolder, localFileList);
     for i := 0 to localFileList.Count - 1 do
     begin
-
+      if not remoteFileList.SearchForLocalFile(localFileList[i]) then
+        writeln('fehlende Datei ermittelt: ' + localFilelist[i].Path +'\'+ localFileList[i].FileName);
+        //          LocalFileList[i].SendContent(FtpConnection);
     end;
+    writeln('Abgleich abgeschloﬂen');
   finally
 
   end;
