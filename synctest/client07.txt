@@ -1,0 +1,24 @@
+Computer: CLIENT07 -  Main scan
+
+Office 15, RETAIL channel - Product ID - 00196-20917-98778-AA101
+Office 15, RETAIL channel - Partial product key - KKVGQ
+Office 15, RETAIL channel - License status - Licensed
+Windows 7 Professional - License status - Licensed
+Windows 7 Professional - Partial product key - KRCMR
+Windows 7 Professional - Product ID - 00371-OEM-9045996-87577
+Windows 7 Professional - License Key - TVPJF-RYQXV-KB8GW-CXY7G-KRCMR
+Windows 7 Professional - Extra info - Full product name: Windows 7 Professional Service Pack 1
+Product ID match to CD Key data
+Product Part No.: X15-37362
+Installed from 'OEM' media.
+Is OEM: Yes
+Windows 7 Professional - User - lokal user
+
+
+Computer: CLIENT07 - Deep scan
+
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriodShort - 600
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriod - 900
+KasperskyLab protected KES10SP1 watchdog LicenseInfo - licenseId - 1ABC-000451-4B35DDAD
+
+

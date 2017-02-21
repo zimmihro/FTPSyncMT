@@ -1,0 +1,23 @@
+Computer: CLIENT05 -  Main scan
+
+Microsoft Office Professional Hybrid 2007 - License Key - K62MW-FT293-KH6FD-VB8XP-FYCQW
+Microsoft Office Professional Hybrid 2007 - Product ID - 89451-415-2672891-66479
+Windows 7 Professional - Partial product key - 4QPQ2
+Windows 7 Professional - License status - Licensed
+Windows 7 Professional - Product ID - 00371-OEM-9045935-49393
+Windows 7 Professional - License Key - TXBWV-RWH4F-YCQJY-MGVKC-4QPQ2
+Windows 7 Professional - Extra info - Full product name: Windows 7 Professional Service Pack 1
+Product ID match to CD Key data
+Product Part No.: X15-37362
+Installed from 'OEM' media.
+Is OEM: Yes
+Windows 7 Professional - User - Admin
+
+
+Computer: CLIENT05 - Deep scan
+
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriodShort - 600
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriod - 900
+KasperskyLab protected KES10SP1 watchdog LicenseInfo - licenseId - 1ABC-000451-4B35DDAD
+
+

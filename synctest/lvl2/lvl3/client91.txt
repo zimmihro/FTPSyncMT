@@ -1,0 +1,26 @@
+Computer: CLIENT91 -  Main scan
+
+Microsoft Office Home and Business 2010 - Product ID - 82503-081-4665786-27307
+Microsoft Office Home and Business 2010 - License Key - 4F6RX-GMPD9-W9JJY-KFQYY-DB97T
+Microsoft Office Professional Hybrid 2007 - Product ID - 89451-419-5209973-66503
+Microsoft Office Professional Hybrid 2007 - License Key - C83Q3-4KK43-DQ8KD-2W688-K6HBJ
+Windows 7 Professional - License status - Licensed
+Windows 7 Professional - Partial product key - WMTC4
+Windows 7 Professional - Product ID - 00371-OEM-9045996-87575
+Windows 7 Professional - License Key - W3TJ4-6RT2B-Q6GHD-MG9PB-WMTC4
+Windows 7 Professional - User - Benutzer
+Windows 7 Professional - Extra info - Full product name: Windows 7 Professional Service Pack 1
+Product ID match to CD Key data
+Product Part No.: X15-37362
+Installed from 'OEM' media.
+Is OEM: Yes
+Windows 7 Professional - Company - Firma
+
+
+Computer: CLIENT91 - Deep scan
+
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriodShort - 600
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriod - 900
+KasperskyLab protected KES10SP1 watchdog LicenseInfo - licenseId - 1ABC-000451-4B35DDAD
+
+

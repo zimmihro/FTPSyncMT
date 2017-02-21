@@ -1,0 +1,30 @@
+Computer: CLIENT76 -  Main scan
+
+Microsoft Office Professional Hybrid 2007 - License Key - VWDFY-DY36X-CYQKP-JM8QY-JKKYG
+Microsoft Office Professional Hybrid 2007 - Product ID - 89451-418-6952983-66754
+Office 15, RETAIL channel - Product ID - 00196-20917-98970-AA300
+Office 15, RETAIL channel - Partial product key - W8CXD
+Office 15, RETAIL channel - License status - Licensed
+Office 15, RETAIL(Grace) channel - Partial product key - DV3TM
+Office 15, RETAIL(Grace) channel - License status - Notification
+Office 15, RETAIL(Grace) channel - Product ID - 00196-00000-00000-AA661
+Windows 7 Professional - User - Admin
+Windows 7 Professional - Product ID - 00371-OEM-9045935-49758
+Windows 7 Professional - License Key - HWTX9-WD2M9-W3T3B-84J8R-VT9HX
+Windows 7 Professional - License status - Licensed
+Windows 7 Professional - Partial product key - VT9HX
+Windows 7 Professional - Extra info - Full product name: Windows 7 Professional Service Pack 1
+Product ID match to CD Key data
+Product Part No.: X15-37362
+Installed from 'OEM' media.
+Is OEM: Yes
+
+
+Computer: CLIENT76 - Deep scan
+
+Hewlett-Packard 639131c2-5954-4f95-30b4-4c1e1bba0fc0 HPBIDIInfo - SERIAL_NUMBER - CNK2N16046
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriodShort - 600
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriod - 900
+KasperskyLab protected KES10SP1 watchdog LicenseInfo - licenseId - 1ABC-000451-4B35DDAD
+
+

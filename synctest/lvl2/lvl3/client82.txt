@@ -1,0 +1,23 @@
+Computer: CLIENT82 -  Main scan
+
+Windows 7 Professional - Extra info - Full product name: Windows 7 Professional Service Pack 1
+Product ID match to CD Key data
+Product Part No.: X15-37377
+Installed from 'OEM' media.
+Is OEM: Yes
+Windows 7 Professional - Partial product key - 7TP9F
+Windows 7 Professional - License status - Licensed
+Windows 7 Professional - Product ID - 00371-OEM-8992671-00004
+Windows 7 Professional - License Key - YKHFT-KW986-GK4PY-FDWYH-7TP9F
+Windows 7 Professional - User - MTR
+Windows 7 Professional (from BIOS) - License Key - N3XQ2-PWX9C-XRK6P-MH2JW-VH3H2
+
+
+Computer: CLIENT82 - Deep scan
+
+Hewlett-Packard 37e8670b-731e-42d2-8e9e-aa9e25275c88 HPBIDIInfo - SERIAL_NUMBER - CNCKH44733
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriodShort - 600
+KasperskyLab protected KES10SP1 environment - ActivationRandomPeriod - 900
+KasperskyLab protected KES10SP1 watchdog LicenseInfo - licenseId - 1ABC-000451-4B35DDAD
+
+
