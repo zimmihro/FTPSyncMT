@@ -2,7 +2,7 @@ unit uFTPSync;
 
 interface
 
-procedure SyncLocalToFTP(localfolder, ftpurl: string; ftpfolder: string; login, password: string);
+procedure SyncLocalToFTP(localfolder, ftpurl: string; ftpFolder: string; login, password: string);
 
 implementation
 
@@ -20,6 +20,7 @@ type
     FContent    : TMemoryStream;
     FSize       : Int64;
     FFileDate   : tdatetime; // last modified
+    function getPath(): string;
   public
     property FileName   : string read FFileName write FFileName;
     property Description: string read FDescription write FDescription;
@@ -49,16 +50,19 @@ type
   private
     FFileName  : string;
     FPath      : string;
+    FUnixPath  : string;
     FFileDate  : tdatetime;
     FSize      : Int64;
     FAttributes: Integer;
+    function getUnixPath(): string;
   public
     property FileName  : string read FFileName write FFileName;
     property Path      : string read FPath write FPath;
+    property UnixPath  : string read getUnixPath write FUnixPath;
     property FileDate  : tdatetime read FFileDate write FFileDate;
     property Size      : Int64 read FSize write FSize;
     property Attributes: Integer read FAttributes write FAttributes;
-    procedure SendContent(FtpConnection: TIdFTP);
+    procedure SendContent(FtpConnection: TIdFTP; folder: string);
   end;
 
   TLocalFileList = class(TObjectList<TLocalFile>)
@@ -95,6 +99,11 @@ begin
     FtpConnection.Get(ToString, Content, False);
     Content.Seek(0, soFromBeginning);
   end;
+end;
+
+function TFTPFile.getPath: string;
+begin
+  Result := IncludeTrailingPathDelimiter(self.FPath);
 end;
 
 constructor TFtpFileList.Create;
@@ -158,15 +167,18 @@ begin
   ParseDirectory(RemoteFolder);
 end;
 
+/// <summary>Überprüft ob eine lokale Datei auf dem FTP-Server vorhanden ist</summary>
+/// @param LocalFile = TLocalFile-Object mit den erforderlichen Daten zum Abgleich
+/// @return = True bei Vorhandensein, sonst False
 function TFtpFileList.SearchForLocalFile(LocalFile: TLocalFile): boolean;
 var
   i: Integer;
 begin
   Result := False;
-  for i := 0 to self.Count-1 do
+  for i := 0 to self.Count - 1 do
   begin
     if (self[i].FileName = LocalFile.FileName) and (self[i].Size = LocalFile.Size) and
-        (self[i].FileDate >= LocalFile.FileDate) and (self[i].Path.IndexOf(LocalFile.Path.Replace('\','/',[rfReplaceAll])) > 0) then
+        (self[i].FileDate >= LocalFile.FileDate) and self[i].Path.EndsWith(LocalFile.UnixPath) then
     begin
       Result := True;
       Exit;
@@ -174,13 +186,13 @@ begin
   end;
 end;
 
-procedure SyncLocalToFTP(localfolder, ftpurl: string; ftpfolder: string; login, password: string);
+procedure SyncLocalToFTP(localfolder, ftpurl: string; ftpFolder: string; login, password: string);
 var
   localFileList : TLocalFileList;
   remoteFileList: TFtpFileList;
   FtpConnection : TIdFTP;
   urlConnection : TIdURI;
-  i             : integer;
+  i             : Integer;
 begin
   FtpConnection := TIdFTP.Create(nil);
   urlConnection := TIdURI.Create(ftpurl);
@@ -195,12 +207,12 @@ begin
     FtpConnection.Passive := True;
     writeln('Stelle Verbindung her zu: ' + login + ':' + password + '@' + ftpurl);
     FtpConnection.Connect;
-    remoteFileList.ParseRemoteDirectory(FtpConnection, ftpfolder, remoteFileList);
+    remoteFileList.ParseRemoteDirectory(FtpConnection, ftpFolder, remoteFileList);
     localFileList.ParseLocalDirectory(localfolder, localFileList);
     for i := 0 to localFileList.Count - 1 do
     begin
       if not remoteFileList.SearchForLocalFile(localFileList[i]) then
-        writeln('fehlende Datei ermittelt: ' + localFilelist[i].Path +'\'+ localFileList[i].FileName);
+        writeln('fehlende Datei ermittelt: ' + localFileList[i].Path + '\' + localFileList[i].FileName);
         //          LocalFileList[i].SendContent(FtpConnection);
     end;
     writeln('Abgleich abgeschloßen');
@@ -211,16 +223,27 @@ end;
 
 { TLocalFile }
 
-procedure TLocalFile.SendContent(FtpConnection: TIdFTP);
+/// <summary>Wandelt Windows-Pfade in Unix-Pfade um (einfacher Austausch von '\' zu'/')</summary>
+/// @return = String mit einem gültigen Unix-Pfad
+function TLocalFile.getUnixPath: string;
+begin
+  Result := self.FPath.Replace('\', '/', [rfReplaceAll]);
+end;
+
+procedure TLocalFile.SendContent(FtpConnection: TIdFTP; folder: string);
 var
-  filestream: TMemoryStream;
+  filestream      : TMemoryStream;
+  workingDirectory: string;
 begin
   if FtpConnection.Connected then
   begin
     try
+      workingDirectory := FtpConnection.RetrieveCurrentDir;
       filestream := TMemoryStream.Create;
       filestream.LoadFromFile(self.Path + self.FileName);
+      FtpConnection.ChangeDir(folder);
       FtpConnection.Put(filestream, self.FileName, False);
+      FtpConnection.ChangeDir(workingDirectory);
     finally
       filestream.Free
     end;
