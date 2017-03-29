@@ -19,8 +19,7 @@ type
     FPath       : string;
     FContent    : TMemoryStream;
     FSize       : Int64;
-    FFileDate   : tdatetime; // last modified
-    function getPath(): string;
+    FFileDate   : tdatetime;
   public
     property FileName   : string read FFileName write FFileName;
     property Description: string read FDescription write FDescription;
@@ -43,7 +42,7 @@ type
     constructor Create; overload;
     /// <summary>liest die Dateien eine FTP-Verzeichnisses aus und speichert diese in eine Liste</summary>
     procedure ParseRemoteDirectory(FtpConnection: TIdFTP; RemoteFolder: string; FtpFileList: TFtpFileList);
-    function SearchForLocalFile(LocalFile: TLocalFile): boolean;
+    function SearchForFile(LocalFile: TLocalFile): boolean;
   end;
 
   TLocalFile = class
@@ -53,7 +52,7 @@ type
     FUnixPath  : string;
     FFileDate  : tdatetime;
     FSize      : Int64;
-    FAttributes: Integer;
+    FAttributes: integer;
     function getUnixPath(): string;
   public
     property FileName  : string read FFileName write FFileName;
@@ -61,7 +60,7 @@ type
     property UnixPath  : string read getUnixPath write FUnixPath;
     property FileDate  : tdatetime read FFileDate write FFileDate;
     property Size      : Int64 read FSize write FSize;
-    property Attributes: Integer read FAttributes write FAttributes;
+    property Attributes: integer read FAttributes write FAttributes;
     procedure SendContent(FtpConnection: TIdFTP; folder: string);
   end;
 
@@ -101,24 +100,20 @@ begin
   end;
 end;
 
-function TFTPFile.getPath: string;
-begin
-  Result := IncludeTrailingPathDelimiter(self.FPath);
-end;
-
 constructor TFtpFileList.Create;
 begin
   inherited Create;
   OwnsObjects := True;
 end;
 
+
 procedure TFtpFileList.ParseRemoteDirectory(FtpConnection: TIdFTP; RemoteFolder: string; FtpFileList: TFtpFileList);
 
   procedure ParseDirectory(const RemoteFolder: string);
   var
     remoteFile       : TFTPFile;
-    i                : Integer;
-    delimiterlocation: Integer;
+    i                : integer;
+    delimiterlocation: integer;
     Name             : string;
     RemoteFolderList : TStringList;
     folder           : string;
@@ -130,7 +125,7 @@ procedure TFtpFileList.ParseRemoteDirectory(FtpConnection: TIdFTP; RemoteFolder:
       for i := 0 to RemoteFolderList.Count - 1 do
       begin
         folder := RemoteFolderList[i];
-        delimiterlocation := lastDelimiter(' ', folder);
+        delimiterlocation := LastDelimiter(':', folder) + 3;
         if delimiterlocation > 0 then
           name := copy(folder, delimiterlocation + 1, length(folder) - delimiterlocation)
         else
@@ -170,9 +165,9 @@ end;
 /// <summary>Überprüft ob eine lokale Datei auf dem FTP-Server vorhanden ist</summary>
 /// @param LocalFile = TLocalFile-Object mit den erforderlichen Daten zum Abgleich
 /// @return = True bei Vorhandensein, sonst False
-function TFtpFileList.SearchForLocalFile(LocalFile: TLocalFile): boolean;
+function TFtpFileList.SearchForFile(LocalFile: TLocalFile): boolean;
 var
-  i: Integer;
+  i: integer;
 begin
   Result := False;
   for i := 0 to self.Count - 1 do
@@ -192,7 +187,7 @@ var
   remoteFileList: TFtpFileList;
   FtpConnection : TIdFTP;
   urlConnection : TIdURI;
-  i             : Integer;
+  i             : integer;
 begin
   FtpConnection := TIdFTP.Create(nil);
   urlConnection := TIdURI.Create(ftpurl);
@@ -211,9 +206,11 @@ begin
     localFileList.ParseLocalDirectory(localfolder, localFileList);
     for i := 0 to localFileList.Count - 1 do
     begin
-      if not remoteFileList.SearchForLocalFile(localFileList[i]) then
+      if not remoteFileList.SearchForFile(localFileList[i]) then
+      begin
         writeln('fehlende Datei ermittelt: ' + localFileList[i].Path + '\' + localFileList[i].FileName);
-        //          LocalFileList[i].SendContent(FtpConnection);
+        localFileList[i].SendContent(FtpConnection, localFileList[i].Path);
+      end;
     end;
     writeln('Abgleich abgeschloßen');
   finally
@@ -237,16 +234,13 @@ var
 begin
   if FtpConnection.Connected then
   begin
-    try
       workingDirectory := FtpConnection.RetrieveCurrentDir;
       filestream := TMemoryStream.Create;
-      filestream.LoadFromFile(self.Path + self.FileName);
-      FtpConnection.ChangeDir(folder);
+      filestream.LoadFromFile(self.Path + '\' + self.FileName);
+      FtpConnection.ChangeDir(folder.Replace('\', '/', [rfReplaceAll]));
       FtpConnection.Put(filestream, self.FileName, False);
       FtpConnection.ChangeDir(workingDirectory);
-    finally
       filestream.Free
-    end;
   end;
 end;
 
